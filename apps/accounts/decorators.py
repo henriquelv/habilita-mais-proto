@@ -10,17 +10,21 @@ def _tipo_usuario(user):
     return getattr(perfil, "tipo_usuario", None)
 
 
+def _is_admin(user):
+    return _tipo_usuario(user) == "admin"
+
+
 def aluno_required(view_func):
-    """Permite acesso apenas a usuários com perfil de aluno."""
+    """Permite acesso a alunos e administradores."""
     return user_passes_test(
-        lambda user: _tipo_usuario(user) == "aluno",
+        lambda user: _tipo_usuario(user) == "aluno" or _is_admin(user),
         login_url="/login/",
     )(view_func)
 
 
 def instrutor_required(view_func):
-    """Permite acesso apenas a instrutores."""
+    """Permite acesso a instrutores e administradores."""
     return user_passes_test(
-        lambda user: _tipo_usuario(user) == "instrutor",
+        lambda user: _tipo_usuario(user) == "instrutor" or _is_admin(user),
         login_url="/login/",
     )(view_func)
