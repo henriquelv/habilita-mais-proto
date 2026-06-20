@@ -19,6 +19,7 @@ def _time_to_minutes(value):
 
 
 def _validar_regras_agendamento(request, agendamento):
+    # valida as regras simples de limite antes de salvar a aula
     qs = Agendamento.objects.filter(aluno=request.user, ativo=True)
     if agendamento.tipo != Agendamento.TipoAula.PRATICA:
         return True
@@ -85,6 +86,7 @@ def agendamento_view(request):
 @login_required(login_url="/login/")
 @aluno_required
 def meus_agendamentos_view(request):
+    # busca os agendamentos do aluno logado e aplica os filtros da tela
     agendamentos_base = Agendamento.objects.filter(aluno=request.user)
     status = request.GET.get("status", "").strip()
     tipo = request.GET.get("tipo", "").strip()
@@ -118,6 +120,7 @@ def meus_agendamentos_view(request):
 def cancelar_agendamento_view(request, pk):
     agendamento = get_object_or_404(Agendamento, pk=pk, aluno=request.user, ativo=True)
     if request.method == "POST":
+        # não apaga do banco, só marca como cancelado
         agendamento.status = Agendamento.Status.CANCELADO
         agendamento.ativo = False
         agendamento.save(update_fields=["status", "ativo"])

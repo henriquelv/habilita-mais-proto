@@ -11,6 +11,7 @@ from ..models import PerfilAluno
 
 def login_view(request):
     if request.user.is_authenticated:
+        # se já estiver logado, não precisa ver a tela de login de novo
         return redirect("dashboard")
 
     form = LoginForm(request.POST or None)
@@ -27,8 +28,9 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, "Login realizado com sucesso!")
+            # depois do login o aluno cai direto no painel principal
             return redirect("dashboard")
-        messages.error(request, "Usuario ou senha invalidos.")
+        messages.error(request, "Usuário ou senha inválidos.")
 
     return render(request, "accounts/login.html", {"form": form})
 
@@ -53,6 +55,7 @@ def cadastro_view(request):
             cpf=form.cleaned_data["cpf"],
             telefone=form.cleaned_data["telefone"],
         )
+        # já cria o progresso básico para o dashboard não ficar vazio
         ProgressoAluno.objects.get_or_create(aluno=user)
         login(request, user)
         messages.success(request, "Cadastro realizado com sucesso!")

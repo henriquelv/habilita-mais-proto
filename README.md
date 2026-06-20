@@ -1,51 +1,26 @@
 # Habilita+
 
-Sistema web de gestão de habilitação digital desenvolvido em Django.
+Projeto desenvolvido para a matéria de Back-End da 5ª fase de Sistemas de Informação na UDESC.
 
-## Funcionalidades
+A ideia é ser um sistema simples de autoescola digital feito em Django. Ele tem cadastro e login de aluno, dashboard com progresso da CNH, agendamento de aulas e exames, histórico, pagamentos, certificados e avaliações dos instrutores.
 
-- Landing page pública.
-- Login, cadastro e perfil de aluno.
-- Dashboard com progresso da CNH.
-- Agendamento de aulas práticas e exames.
-- Listagem e cancelamento lógico de agendamentos.
-- Histórico de aulas.
-- Gestão de pagamentos, boletos e comprovantes.
-- Certificados digitais.
-- Avaliações de instrutores e simulados.
-- Administração dos dados pelo Django Admin.
+## Como o projeto está separado
 
-## Estrutura
+- `apps/`: parte do back-end em Python.
+- `templates/`: páginas HTML que aparecem para o usuário.
+- `static/`: CSS, JavaScript e imagens.
+- `habilita_mais/`: configurações principais do Django.
 
-```text
-habilita_mais/
-|-- habilita_mais/          # Configuração principal do Django
-|-- apps/                   # Apps separados por domínio
-|   |-- core/               # Landing page e suporte
-|   |-- accounts/           # Autenticação, cadastro e perfil
-|   |-- agendamentos/       # Aulas e exames
-|   |-- progresso/          # Dashboard, histórico e certificados
-|   |-- pagamentos/         # Pagamentos e comprovantes
-|   `-- avaliacoes/         # Avaliações e resultados
-|-- templates/              # Templates HTML globais
-|-- static/                 # CSS, JavaScript e imagens
-|-- manage.py
-|-- requirements.txt
-|-- .env.example
-`-- superuser.txt
-```
+Dentro de `apps/` cada funcionalidade ficou em um app separado:
 
-## Arquitetura
+- `accounts`: login, cadastro e perfil.
+- `agendamentos`: aulas e exames.
+- `progresso`: dashboard, histórico e certificados.
+- `pagamentos`: boletos e comprovantes.
+- `avaliacoes`: notas e feedback dos instrutores.
+- `core`: página inicial e suporte.
 
-- Cada app possui seu próprio `urls.py`.
-- Views organizadas dentro de pastas `views/`, separadas por responsabilidade.
-- Rotas internas protegidas com `@login_required(login_url="/login/")`.
-- Persistência feita com ORM do Django.
-- Models principais possuem campo `ativo` para deleção lógica.
-- Configurações sensíveis são lidas de variáveis de ambiente.
-- Models registrados no Django Admin com `list_display`, `list_filter` e `search_fields`.
-
-## Como rodar localmente
+## Como rodar
 
 ```bash
 python -m venv venv
@@ -56,7 +31,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Acesse:
+Depois é só abrir:
 
 ```text
 http://127.0.0.1:8000/
@@ -64,16 +39,20 @@ http://127.0.0.1:8000/
 
 ## Admin
 
-Crie um superusuário com:
+Para criar um usuário administrador:
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Credenciais de referência usadas no ambiente local:
+No meu ambiente local usei:
 
 ```text
-Usuário: admin
+Login: admin
 Senha: admin123
 Email: admin@habilita.com
 ```
+
+## Observações
+
+O arquivo `.env` e o banco `db.sqlite3` ficam só na máquina local e não vão para o GitHub. No repositório fica apenas o `.env.example`.

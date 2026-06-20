@@ -12,6 +12,7 @@ from apps.progresso.models import Certificado, ProgressoAluno
 
 
 def ensure_initial_student_data(user):
+    # cria alguns dados iniciais para o usuário conseguir testar o painel
     progresso, _ = ProgressoAluno.objects.get_or_create(
         aluno=user,
         defaults={
@@ -85,6 +86,7 @@ def ensure_initial_student_data(user):
 
 
 def _dashboard_message(user):
+    # muda a frase do topo conforme o tipo de usuário
     perfil, _ = PerfilAluno.objects.get_or_create(
         usuario=user,
         defaults={
