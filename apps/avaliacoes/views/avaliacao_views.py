@@ -18,6 +18,7 @@ def avaliacoes_view(request):
     form = ResultadoAvaliacaoForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
+        # registra a avalia??o do instrutor
         instrutor = form.cleaned_data["instrutor"]
         avaliacao, _ = Avaliacao.objects.get_or_create(
             titulo=f"Avaliação do instrutor {instrutor}",
@@ -34,12 +35,14 @@ def avaliacoes_view(request):
         messages.success(request, "Avaliação enviada com sucesso! Obrigado pelo feedback.")
         return redirect("avaliacoes")
 
+    # busca aulas pendentes de avalia??o
     aulas_pendentes = Agendamento.objects.filter(
         aluno=request.user,
         ativo=True,
         status=Agendamento.Status.CONCLUIDO,
         avaliado=False,
     ).exclude(instrutor="")
+    # lista instrutores com m?dias de avalia??o
     instrutores = Avaliacao.objects.filter(ativo=True).values("instrutor").annotate(
         media=Avg("resultadoavaliacao__nota"),
         total=Count("resultadoavaliacao"),

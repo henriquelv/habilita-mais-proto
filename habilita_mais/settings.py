@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_FILE = BASE_DIR / ".env"
 env = RepositoryEnv(ENV_FILE).data if ENV_FILE.exists() else {}
 
-SECRET_KEY = env.get("SECRET_KEY", "django-insecure-dev-key")
+SECRET_KEY = env.get("SECRET_KEY", "")
 DEBUG = env.get("DEBUG", "False").lower() in {"1", "true", "yes", "on"}
 ALLOWED_HOSTS = env.get("ALLOWED_HOSTS", "127.0.0.1,localhost,testserver").split(",")
 

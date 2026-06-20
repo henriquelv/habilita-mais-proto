@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+  <!-- navbar principal -->
   <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top app-navbar">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="{% if request.user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'home' %}{% endif %}">
@@ -19,6 +20,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="mainNav">
+        <!-- menu de navega??o para usu?rio logado -->
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
           {% if request.user.is_authenticated %}
             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Início</a></li>
@@ -35,6 +37,7 @@
         </ul>
         <div class="d-flex align-items-center gap-2">
           {% if request.user.is_authenticated %}
+            <!-- bot?es de perfil e logout -->
             <button class="icon-button position-relative" type="button" aria-label="Notificações">
               <i class="bi bi-bell"></i>
               <span class="notification-dot"></span>
@@ -50,6 +53,7 @@
     </div>
   </nav>
 
+  <!-- bloco de mensagens do django -->
   {% if messages %}
     <div class="container mt-3">
       {% for message in messages %}
@@ -63,6 +67,7 @@
 
   {% block content %}{% endblock %}
 
+  <!-- footer -->
   <footer class="border-top bg-white py-4 mt-auto">
     <div class="container text-center text-muted small">
       <p class="mb-0">&copy; 2026 Habilita+. Todos os direitos reservados.</p>
