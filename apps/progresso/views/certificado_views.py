@@ -1,12 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from apps.accounts.decorators import aluno_required
 from apps.progresso.models import Certificado, ProgressoAluno
 
 from .dashboard_views import ensure_initial_student_data
 
 
 @login_required(login_url="/login/")
+@aluno_required
 def certificados_view(request):
     progresso = ensure_initial_student_data(request.user)
     certificados = Certificado.objects.filter(aluno=request.user, ativo=True)

@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from apps.accounts.models import PerfilAluno
 from apps.agendamentos.models import Agendamento
 from apps.avaliacoes.models import Avaliacao, ResultadoAvaliacao
 from apps.pagamentos.models import Pagamento
@@ -83,6 +84,25 @@ def ensure_initial_student_data(user):
     return progresso
 
 
+def _dashboard_message(user):
+    perfil, _ = PerfilAluno.objects.get_or_create(
+        usuario=user,
+        defaults={
+            "cpf": "",
+            "telefone": "",
+            "tipo_usuario": PerfilAluno.TipoUsuario.ADMIN if user.is_staff or user.is_superuser else PerfilAluno.TipoUsuario.ALUNO,
+        },
+    )
+    if (user.is_staff or user.is_superuser) and perfil.tipo_usuario != PerfilAluno.TipoUsuario.ADMIN:
+        perfil.tipo_usuario = PerfilAluno.TipoUsuario.ADMIN
+        perfil.save(update_fields=["tipo_usuario"])
+    if user.is_staff or user.is_superuser or perfil.tipo_usuario == PerfilAluno.TipoUsuario.ADMIN:
+        return "Administração — visão geral do sistema."
+    if perfil.tipo_usuario == PerfilAluno.TipoUsuario.INSTRUTOR:
+        return "Painel do Instrutor — gerencie suas aulas agendadas."
+    return f"Bem-vindo, {user.first_name or user.username}! Acompanhe sua jornada."
+
+
 @login_required(login_url="/login/")
 def dashboard_view(request):
     progresso = ensure_initial_student_data(request.user)
@@ -109,5 +129,6 @@ def dashboard_view(request):
         "pagamentos_pendentes": pagamentos_pendentes,
         "aulas_para_avaliar": aulas_para_avaliar,
         "avaliacoes_count": ResultadoAvaliacao.objects.filter(aluno=request.user, ativo=True).count(),
+        "dashboard_message": _dashboard_message(request.user),
     }
     return render(request, "progresso/dashboard.html", context)

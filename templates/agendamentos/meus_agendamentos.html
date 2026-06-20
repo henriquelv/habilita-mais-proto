@@ -7,6 +7,41 @@
       <h1 class="h2 fw-bold">Meus Agendamentos</h1>
       <p class="text-muted">Visualize e gerencie suas aulas agendadas</p>
     </header>
+
+    <section class="app-card mb-4">
+      <h2 class="h5"><i class="bi bi-search text-primary-app me-2"></i>Buscar Agendamentos</h2>
+      <form method="get" class="row g-3 align-items-end mt-1">
+        <div class="col-md-4">
+          <label class="form-label" for="status">Status</label>
+          <select class="form-select" id="status" name="status">
+            <option value="">Todos</option>
+            {% for value, label in status_choices %}
+              <option value="{{ value }}" {% if filtros.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="tipo">Tipo</label>
+          <select class="form-select" id="tipo" name="tipo">
+            <option value="">Todos</option>
+            {% for value, label in tipo_choices %}
+              <option value="{{ value }}" {% if filtros.tipo == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="data">Data</label>
+          <input class="form-control" id="data" name="data" type="date" value="{{ filtros.data }}">
+        </div>
+        <div class="col-md-1 d-grid">
+          <button class="btn btn-primary-app" type="submit"><i class="bi bi-search"></i></button>
+        </div>
+        <div class="col-12">
+          <a href="{% url 'meus_agendamentos' %}" class="btn btn-outline-dark btn-sm">Limpar filtros</a>
+        </div>
+      </form>
+    </section>
+
     <section class="app-card mb-4 bg-card-gradient">
       <h2 class="h5"><i class="bi bi-exclamation-circle text-primary-app me-2"></i>Resumo Semanal</h2>
       <div class="row g-3 mt-1">
@@ -17,28 +52,35 @@
     </section>
 
     <section>
-      <h2 class="h5 mb-3"><i class="bi bi-calendar-check text-success me-2"></i>Agendamentos Confirmados</h2>
-      {% for agendamento in confirmados %}
+      <h2 class="h5 mb-3"><i class="bi bi-calendar-check text-success me-2"></i>Agendamentos Encontrados</h2>
+      {% for agendamento in agendamentos %}
         <article class="app-card mb-3">
           <div class="d-flex gap-3 justify-content-between">
             <div class="d-flex gap-3">
               <div class="list-icon"><i class="bi bi-car-front"></i></div>
               <div>
-                <h3 class="h5 mb-1">{{ agendamento.get_tipo_display }} - Categoria {{ agendamento.categoria }} <span class="badge text-bg-success">Agendado</span></h3>
+                <h3 class="h5 mb-1">
+                  {{ agendamento.get_tipo_display }} - Categoria {{ agendamento.categoria }}
+                  <span class="badge {% if agendamento.status == 'cancelado' %}text-bg-danger{% elif agendamento.status == 'concluido' %}text-bg-success{% else %}text-bg-warning{% endif %}">
+                    {{ agendamento.get_status_display }}
+                  </span>
+                </h3>
                 <p class="text-muted small mb-1"><i class="bi bi-calendar me-1"></i>{{ agendamento.data|date:"l, d F Y" }}</p>
                 <p class="text-muted small mb-1"><i class="bi bi-clock me-1"></i>{{ agendamento.horario|time:"H:i" }}</p>
                 {% if agendamento.instrutor %}<p class="text-muted small mb-1"><i class="bi bi-person me-1"></i>Instrutor: {{ agendamento.instrutor }}</p>{% endif %}
                 {% if agendamento.local %}<p class="text-muted small mb-0"><i class="bi bi-hospital me-1"></i>{{ agendamento.local }}</p>{% endif %}
               </div>
             </div>
-            <form method="post" action="{% url 'cancelar_agendamento' agendamento.pk %}">
-              {% csrf_token %}
-              <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
-            </form>
+            {% if agendamento.ativo and agendamento.status == 'agendado' %}
+              <form method="post" action="{% url 'cancelar_agendamento' agendamento.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
+              </form>
+            {% endif %}
           </div>
         </article>
       {% empty %}
-        <div class="app-card text-center text-muted py-5">Nenhum agendamento confirmado</div>
+        <div class="app-card text-center text-muted py-5">Nenhum agendamento encontrado para os filtros selecionados.</div>
       {% endfor %}
     </section>
   </div>

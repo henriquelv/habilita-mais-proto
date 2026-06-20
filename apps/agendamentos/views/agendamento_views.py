@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from apps.accounts.decorators import aluno_required
+
 from ..forms import AgendamentoForm
 from ..models import Agendamento
 
@@ -58,6 +60,7 @@ def _validar_regras_agendamento(request, agendamento):
 
 
 @login_required(login_url="/login/")
+@aluno_required
 def agendamento_view(request):
     form = AgendamentoForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -80,17 +83,38 @@ def agendamento_view(request):
 
 
 @login_required(login_url="/login/")
+@aluno_required
 def meus_agendamentos_view(request):
-    agendamentos = Agendamento.objects.filter(aluno=request.user, ativo=True)
+    agendamentos_base = Agendamento.objects.filter(aluno=request.user)
+    status = request.GET.get("status", "").strip()
+    tipo = request.GET.get("tipo", "").strip()
+    data = request.GET.get("data", "").strip()
+
+    agendamentos_filtrados = agendamentos_base
+    if status:
+        agendamentos_filtrados = agendamentos_filtrados.filter(status=status)
+    else:
+        agendamentos_filtrados = agendamentos_filtrados.filter(ativo=True)
+    if tipo:
+        agendamentos_filtrados = agendamentos_filtrados.filter(tipo=tipo)
+    if data:
+        agendamentos_filtrados = agendamentos_filtrados.filter(data=data)
+
+    agendamentos_ativos = agendamentos_base.filter(ativo=True)
     context = {
-        "confirmados": agendamentos.filter(status=Agendamento.Status.AGENDADO),
-        "pendentes": agendamentos.filter(status=Agendamento.Status.AGENDADO),
-        "total_praticas": agendamentos.filter(tipo=Agendamento.TipoAula.PRATICA).count(),
+        "agendamentos": agendamentos_filtrados.order_by("data", "horario"),
+        "confirmados": agendamentos_ativos.filter(status=Agendamento.Status.AGENDADO),
+        "pendentes": agendamentos_ativos.filter(status=Agendamento.Status.AGENDADO),
+        "total_praticas": agendamentos_ativos.filter(tipo=Agendamento.TipoAula.PRATICA).count(),
+        "status_choices": Agendamento.Status.choices,
+        "tipo_choices": Agendamento.TipoAula.choices,
+        "filtros": {"status": status, "tipo": tipo, "data": data},
     }
     return render(request, "agendamentos/meus_agendamentos.html", context)
 
 
 @login_required(login_url="/login/")
+@aluno_required
 def cancelar_agendamento_view(request, pk):
     agendamento = get_object_or_404(Agendamento, pk=pk, aluno=request.user, ativo=True)
     if request.method == "POST":

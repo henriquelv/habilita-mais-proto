@@ -4,6 +4,7 @@ from django.db.models import Avg, Count
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.agendamentos.models import Agendamento
+from apps.accounts.decorators import aluno_required
 from apps.progresso.views.dashboard_views import ensure_initial_student_data
 
 from ..forms import ResultadoAvaliacaoForm
@@ -11,6 +12,7 @@ from ..models import Avaliacao, ResultadoAvaliacao
 
 
 @login_required(login_url="/login/")
+@aluno_required
 def avaliacoes_view(request):
     ensure_initial_student_data(request.user)
     form = ResultadoAvaliacaoForm(request.POST or None)

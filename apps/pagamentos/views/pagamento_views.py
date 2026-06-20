@@ -4,11 +4,13 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.progresso.views.dashboard_views import ensure_initial_student_data
+from apps.accounts.decorators import aluno_required
 
 from ..models import Pagamento
 
 
 @login_required(login_url="/login/")
+@aluno_required
 def pagamentos_view(request):
     ensure_initial_student_data(request.user)
     if request.method == "POST":
