@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Histórico | Habilita+{% endblock %}
+{% block content %}
+<main class="page-bg py-5">
+  <div class="container">
+    <header class="mb-4">
+      <h1 class="h2 fw-bold"><i class="bi bi-clock-history text-primary-app me-2"></i>Histórico de Aulas</h1>
+      <p class="text-muted">Acompanhe todas as suas aulas realizadas</p>
+    </header>
+    <section class="row g-3 mb-4">
+      <div class="col-md-3"><div class="metric-card"><i class="bi bi-check-circle text-success"></i><strong>{{ aulas_concluidas.count }}</strong><small>Concluídas</small></div></div>
+      <div class="col-md-3"><div class="metric-card"><i class="bi bi-x-circle text-danger"></i><strong>{{ aulas_canceladas.count }}</strong><small>Canceladas</small></div></div>
+      <div class="col-md-3"><div class="metric-card"><i class="bi bi-star text-primary-app"></i><strong>-</strong><small>Avaliadas</small></div></div>
+      <div class="col-md-3"><div class="metric-card"><i class="bi bi-car-front text-info"></i><strong>{{ taxa_conclusao }}%</strong><small>Taxa Conclusão</small></div></div>
+    </section>
+    <section class="app-card mb-4">
+      <h2 class="h5"><i class="bi bi-check-circle text-success me-2"></i>Aulas Concluídas</h2>
+      {% if aulas_concluidas %}
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead><tr><th>Data</th><th>Horário</th><th>Categoria</th><th>Instrutor</th><th>Avaliação</th></tr></thead>
+            <tbody>
+              {% for aula in aulas_concluidas %}
+                <tr>
+                  <td>{{ aula.data|date:"d/m/Y" }}</td>
+                  <td>{{ aula.horario|time:"H:i" }}</td>
+                  <td><span class="badge text-bg-secondary">Cat. {{ aula.categoria }}</span></td>
+                  <td>{{ aula.instrutor|default:"-" }}</td>
+                  <td>{% if aula.avaliado %}<span class="text-primary-app">★★★★★</span>{% else %}<span class="badge text-bg-light">Pendente</span>{% endif %}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty-state"><i class="bi bi-clock-history"></i><p>Nenhuma aula concluída ainda</p><small>Complete suas primeiras aulas para ver o histórico</small></div>
+      {% endif %}
+    </section>
+    {% if aulas_canceladas %}
+      <section class="app-card">
+        <h2 class="h5"><i class="bi bi-x-circle text-danger me-2"></i>Aulas Canceladas</h2>
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead><tr><th>Data</th><th>Horário</th><th>Categoria</th><th>Instrutor</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for aula in aulas_canceladas %}
+                <tr><td>{{ aula.data|date:"d/m/Y" }}</td><td>{{ aula.horario|time:"H:i" }}</td><td>Cat. {{ aula.categoria }}</td><td>{{ aula.instrutor|default:"-" }}</td><td><span class="badge text-bg-danger">Cancelada</span></td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}

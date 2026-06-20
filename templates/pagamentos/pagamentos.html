@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Pagamentos | Habilita+{% endblock %}
+{% block content %}
+<main class="page-bg py-5">
+  <div class="container">
+    <header class="mb-4">
+      <h1 class="h2 fw-bold">Pagamentos</h1>
+      <p class="text-muted">Gerencie seus pagamentos e boletos</p>
+    </header>
+    <section class="row g-4 mb-4">
+      <div class="col-md-4"><div class="app-card metric-inline"><i class="bi bi-check-circle text-success"></i><div><small>Pagos</small><strong>R$ {{ total_pago }}</strong></div></div></div>
+      <div class="col-md-4"><div class="app-card metric-inline"><i class="bi bi-clock text-warning"></i><div><small>Pendentes</small><strong>R$ {{ total_pendente }}</strong></div></div></div>
+      <div class="col-md-4"><div class="app-card metric-inline"><i class="bi bi-credit-card text-primary-app"></i><div><small>Total</small><strong>R$ {{ total }}</strong></div></div></div>
+    </section>
+
+    <section class="app-card mb-4">
+      <h2 class="h5"><i class="bi bi-exclamation-circle text-warning me-2"></i>Pagamentos Pendentes</h2>
+      {% for pagamento in pendentes %}
+        <div class="payment-row bg-warning-soft">
+          <div><strong>{{ pagamento.descricao }}</strong><span class="badge text-bg-warning ms-2">Pendente</span><p class="text-muted small mb-0">Vencimento: {{ pagamento.vencimento|date:"d/m/Y" }}</p></div>
+          <div class="text-end"><strong class="fs-5">R$ {{ pagamento.valor }}</strong><button class="btn btn-primary-app btn-sm d-block mt-2 pay-button" data-bs-toggle="modal" data-bs-target="#paymentModal" data-payment-id="{{ pagamento.pk }}" data-payment-title="{{ pagamento.descricao }}" data-payment-amount="{{ pagamento.valor }}">Pagar Agora</button></div>
+        </div>
+      {% empty %}
+        <div class="empty-state"><i class="bi bi-check-circle text-success"></i><p>Nenhum pagamento pendente no momento</p></div>
+      {% endfor %}
+    </section>
+
+    <section class="app-card">
+      <h2 class="h5"><i class="bi bi-check-circle text-success me-2"></i>Histórico de Pagamentos</h2>
+      {% for pagamento in pagos %}
+        <div class="payment-row">
+          <div><strong>{{ pagamento.descricao }}</strong><span class="badge text-bg-success ms-2">Pago</span><p class="text-muted small mb-0">Pagamento: {{ pagamento.criado_em|date:"d/m/Y" }}</p></div>
+          <div class="text-end"><strong>R$ {{ pagamento.valor }}</strong><button class="btn btn-outline-dark btn-sm d-block mt-2" type="button"><i class="bi bi-download me-1"></i>Comprovante</button></div>
+        </div>
+      {% empty %}
+        <p class="text-muted text-center py-4">Nenhum pagamento realizado ainda</p>
+      {% endfor %}
+    </section>
+  </div>
+</main>
+
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="pagamento_id" id="paymentId">
+        <div class="modal-header">
+          <div><h2 class="modal-title h5">Realizar Pagamento</h2><p class="text-muted mb-0" id="paymentDescription"></p></div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pix" type="button">PIX</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#boleto" type="button">Boleto</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#cartao" type="button">Cartão</button></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="pix">
+              <div class="text-center">
+                <div class="qr-box mx-auto"><i class="bi bi-qr-code"></i></div>
+                <p class="text-muted small mt-3">Escaneie o QR Code com o app do seu banco ou copie o código PIX.</p>
+                <input class="form-control font-monospace small" value="00020126580014br.gov.bcb.pix0136habilita-plus" readonly>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="boleto">
+              <div class="bg-light rounded p-3"><strong>Informações do Boleto</strong><p class="mb-0 text-muted small">O boleto será gerado e enviado para seu email.</p></div>
+            </div>
+            <div class="tab-pane fade" id="cartao">
+              <div class="row g-3">
+                <div class="col-12"><label class="form-label">Número do Cartão</label><input class="form-control" placeholder="0000 0000 0000 0000"></div>
+                <div class="col-12"><label class="form-label">Nome no Cartão</label><input class="form-control text-uppercase" placeholder="NOME IMPRESSO NO CARTÃO"></div>
+                <div class="col-md-6"><label class="form-label">Validade</label><input class="form-control" placeholder="MM/AA"></div>
+                <div class="col-md-6"><label class="form-label">CVV</label><input class="form-control" type="password" placeholder="123"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-primary-app w-100" type="submit">Confirmar Pagamento</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

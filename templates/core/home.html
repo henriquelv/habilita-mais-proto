@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Habilita+ | CNH digital{% endblock %}
+{% block content %}
+<main class="page-bg">
+  <section class="hero-section">
+    <div class="container text-center">
+      <img src="{% static 'img/logo.png' %}" alt="Habilita+" class="hero-logo mb-4">
+      <p class="lead hero-subtitle mx-auto">
+        Sua jornada para a habilitação <span>simplificada</span> e <span>digital</span>
+      </p>
+      <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center my-5">
+        <a href="{% url 'cadastro' %}" class="btn btn-primary-app btn-lg">Começar Agora</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg">Já tenho conta</a>
+      </div>
+      <div class="d-flex flex-wrap justify-content-center gap-4 text-muted">
+        <span><i class="bi bi-check-circle-fill text-success me-2"></i>100% Digital</span>
+        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Integrado com Detran</span>
+        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Suporte Completo</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container py-5">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Tudo que você precisa em um só lugar</h2>
+      <p class="text-muted">Gerencie todo o processo de habilitação de forma simples e eficiente</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="app-card text-center h-100">
+          <div class="feature-icon bg-primary-soft mx-auto"><i class="bi bi-calendar2-check text-primary-app"></i></div>
+          <h3 class="h5 mt-3">Agendamento Fácil</h3>
+          <p class="text-muted small">Agende suas aulas práticas e exames com poucos cliques</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="app-card text-center h-100">
+          <div class="feature-icon bg-info-soft mx-auto"><i class="bi bi-credit-card text-info"></i></div>
+          <h3 class="h5 mt-3">Pagamentos Online</h3>
+          <p class="text-muted small">Pague mensalidades e taxas de forma segura e prática</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="app-card text-center h-100">
+          <div class="feature-icon bg-success-soft mx-auto"><i class="bi bi-clock text-success"></i></div>
+          <h3 class="h5 mt-3">Acompanhamento</h3>
+          <p class="text-muted small">Veja seu progresso em tempo real e próximas etapas</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="app-card text-center h-100">
+          <div class="feature-icon bg-warning-soft mx-auto"><i class="bi bi-award text-warning"></i></div>
+          <h3 class="h5 mt-3">Certificados</h3>
+          <p class="text-muted small">Acesse seus documentos e certificados digitalmente</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-band py-5">
+    <div class="container">
+      <div class="row g-4 text-center">
+        <div class="col-md-4"><div class="stat-icon mx-auto"><i class="bi bi-people"></i></div><p class="stat-number">5.000+</p><p class="text-muted">Alunos Ativos</p></div>
+        <div class="col-md-4"><div class="stat-icon mx-auto"><i class="bi bi-check2-circle"></i></div><p class="stat-number">95%</p><p class="text-muted">Taxa de Aprovação</p></div>
+        <div class="col-md-4"><div class="stat-icon mx-auto"><i class="bi bi-shield-check"></i></div><p class="stat-number">100%</p><p class="text-muted">Seguro e Confiável</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container text-center py-5">
+    <h2 class="fw-bold">Pronto para começar sua jornada?</h2>
+    <p class="text-muted mb-4">Junte-se a milhares de alunos que já simplificaram o processo de habilitação</p>
+    <a href="{% url 'cadastro' %}" class="btn btn-primary-app btn-lg px-5">Criar Conta Grátis</a>
+  </section>
+</main>
+{% endblock %}

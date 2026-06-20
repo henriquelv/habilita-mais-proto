@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Suporte | Habilita+{% endblock %}
+{% block content %}
+<main class="page-bg py-5">
+  <div class="container">
+    <header class="mb-4"><h1 class="h2 fw-bold">Central de Suporte</h1><p class="text-muted">Estamos aqui para ajudar você</p></header>
+    <section class="row g-4 mb-4">
+      <div class="col-md-4"><div class="app-card text-center"><i class="bi bi-telephone fs-2 text-primary-app"></i><h2 class="h6 mt-3">Telefone</h2><p class="text-muted small">(11) 3456-7890<br>Seg-Sex: 8h-18h</p></div></div>
+      <div class="col-md-4"><div class="app-card text-center"><i class="bi bi-chat-dots fs-2 text-info"></i><h2 class="h6 mt-3">WhatsApp</h2><p class="text-muted small">(11) 99876-5432<br>Atendimento 24h</p></div></div>
+      <div class="col-md-4"><div class="app-card text-center"><i class="bi bi-envelope fs-2 text-warning"></i><h2 class="h6 mt-3">E-mail</h2><p class="text-muted small">contato@habilita.com<br>Resposta em 24h</p></div></div>
+    </section>
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <section class="app-card">
+          <h2 class="h5"><i class="bi bi-send text-primary-app me-2"></i>Envie uma Mensagem</h2>
+          <form method="post" class="vstack gap-3">
+            {% csrf_token %}
+            <input class="form-control" name="nome" placeholder="Nome completo" required>
+            <input class="form-control" name="email" type="email" placeholder="seu@email.com" required>
+            <textarea class="form-control" name="mensagem" rows="6" placeholder="Descreva sua dúvida ou problema..." required></textarea>
+            <button class="btn btn-primary-app" type="submit">Enviar Mensagem</button>
+          </form>
+        </section>
+      </div>
+      <div class="col-lg-6">
+        <section class="app-card">
+          <h2 class="h5"><i class="bi bi-question-circle text-info me-2"></i>Perguntas Frequentes</h2>
+          <div class="accordion" id="faq">
+            <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">Como faço para agendar uma aula?</button></h3><div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faq"><div class="accordion-body text-muted">Vá até Agendamento, selecione data, horário e instrutor desejado.</div></div></div>
+            <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">Posso cancelar um agendamento?</button></h3><div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faq"><div class="accordion-body text-muted">Sim. Acesse Meus Agendamentos e clique no botão de cancelar.</div></div></div>
+            <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">Quais formas de pagamento aceitas?</button></h3><div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faq"><div class="accordion-body text-muted">PIX, boleto bancário e cartão de crédito em até 3x.</div></div></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

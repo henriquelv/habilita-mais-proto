@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Habilita+{% endblock %}
+{% block content %}
+<main class="page-bg py-5">
+  <div class="container">
+    <header class="mb-4">
+      <h1 class="h2 fw-bold">Bem-vindo, {{ request.user.first_name|default:"Aluno" }}!</h1>
+      <p class="text-muted">Acompanhe seu progresso e gerencie suas atividades</p>
+    </header>
+
+    <section class="app-card mb-4">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <i class="bi bi-award text-primary-app"></i>
+        <h2 class="h5 mb-0">Seu Progresso - Categoria B</h2>
+      </div>
+      <p class="text-muted small">Você está quase lá!</p>
+      <div class="d-flex justify-content-between small fw-semibold mb-2">
+        <span>Progresso Total</span>
+        <span class="text-primary-app">{{ progresso.percentual_total }}%</span>
+      </div>
+      <div class="progress app-progress mb-4">
+        <div class="progress-bar" style="width: {{ progresso.percentual_total }}%"></div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4"><div class="status-row"><i class="bi bi-check-circle text-success"></i><div><strong>Aulas Teóricas</strong><small>{{ progresso.aulas_teoricas_concluidas }}/{{ progresso.aulas_teoricas_total }} completas</small></div></div></div>
+        <div class="col-md-4"><div class="status-row"><i class="bi bi-clock text-warning"></i><div><strong>Aulas Práticas</strong><small>{{ progresso.aulas_praticas_concluidas }}/{{ progresso.aulas_praticas_total }} completas</small></div></div></div>
+        <div class="col-md-4"><div class="status-row"><i class="bi bi-exclamation-circle text-info"></i><div><strong>Exames</strong><small>{{ progresso.exame_status|capfirst }}</small></div></div></div>
+      </div>
+    </section>
+
+    <section class="row g-4 mb-4">
+      <div class="col-md-6 col-lg-3"><a class="text-decoration-none" href="{% url 'agendamento' %}"><div class="quick-card"><i class="bi bi-calendar2-check text-primary-app"></i><strong>Agendar Aula</strong><small>Marque suas próximas aulas</small></div></a></div>
+      <div class="col-md-6 col-lg-3"><a class="text-decoration-none" href="{% url 'meus_agendamentos' %}"><div class="quick-card"><i class="bi bi-clock text-info"></i><strong>Meus Agendamentos</strong><small>Veja suas aulas marcadas</small></div></a></div>
+      <div class="col-md-6 col-lg-3"><a class="text-decoration-none" href="{% url 'pagamentos' %}"><div class="quick-card"><i class="bi bi-credit-card text-warning"></i><strong>Pagamentos</strong><small>Boletos e comprovantes</small></div></a></div>
+      <div class="col-md-6 col-lg-3"><a class="text-decoration-none" href="{% url 'certificados' %}"><div class="quick-card"><i class="bi bi-file-earmark-check text-success"></i><strong>Certificados</strong><small>Documentos digitais</small></div></a></div>
+    </section>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <section class="app-card h-100">
+          <h2 class="h5">Próximas Aulas</h2>
+          <p class="text-muted small">Suas aulas agendadas</p>
+          {% for aula in proximas_aulas %}
+            <div class="list-card">
+              <div class="list-icon"><i class="bi bi-car-front"></i></div>
+              <div>
+                <strong>{{ aula.get_tipo_display }} - Categoria {{ aula.categoria }}</strong>
+                <p class="mb-0 text-muted small">{{ aula.data|date:"l, d/m" }} às {{ aula.horario|time:"H:i" }}</p>
+                {% if aula.instrutor %}<p class="mb-0 text-muted small">Instrutor: {{ aula.instrutor }}</p>{% endif %}
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-muted text-center py-4">Nenhuma aula agendada</p>
+          {% endfor %}
+        </section>
+      </div>
+      <div class="col-lg-6">
+        <section class="app-card h-100">
+          <h2 class="h5">Pagamentos Pendentes</h2>
+          <p class="text-muted small">Mantenha seus pagamentos em dia</p>
+          {% for pagamento in pagamentos_pendentes %}
+            <div class="payment-row">
+              <div>
+                <strong>{{ pagamento.descricao }}</strong>
+                <p class="mb-0 text-muted small">Vencimento: {{ pagamento.vencimento|date:"d/m/Y" }}</p>
+              </div>
+              <div class="text-end">
+                <strong>R$ {{ pagamento.valor }}</strong>
+                <a href="{% url 'pagamentos' %}" class="btn btn-primary-app btn-sm d-block mt-2">Pagar</a>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-muted text-center py-4">Nenhum pagamento pendente</p>
+          {% endfor %}
+        </section>
+      </div>
+    </div>
+
+    {% if aulas_para_avaliar %}
+      <section class="app-card mt-4 border-warning-subtle bg-warning-soft">
+        <h2 class="h5"><i class="bi bi-star text-primary-app me-2"></i>Avalie suas aulas</h2>
+        {% for aula in aulas_para_avaliar %}
+          <div class="payment-row bg-white">
+            <div><strong>Aula com {{ aula.instrutor }}</strong><p class="mb-0 text-muted small">{{ aula.data|date:"d/m/Y" }} às {{ aula.horario|time:"H:i" }}</p></div>
+            <a href="{% url 'avaliacoes' %}" class="btn btn-primary-app btn-sm">Avaliar</a>
+          </div>
+        {% endfor %}
+      </section>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Certificados | Habilita+{% endblock %}
+{% block content %}
+<main class="page-bg py-5">
+  <div class="container">
+    <header class="mb-4">
+      <h1 class="h2 fw-bold">Certificados</h1>
+      <p class="text-muted">Acesse e baixe seus certificados e documentos</p>
+    </header>
+    <h2 class="h5 mb-3"><i class="bi bi-check-circle text-success me-2"></i>Certificados Disponíveis</h2>
+    <div class="row g-4 mb-5">
+      {% for certificado in certificados %}
+        <div class="col-md-6">
+          <article class="app-card h-100">
+            <div class="d-flex justify-content-between gap-3 mb-3">
+              <div class="d-flex gap-3">
+                <div class="list-icon success"><i class="bi bi-award"></i></div>
+                <div><h3 class="h5 mb-1">{{ certificado.nome }}</h3><p class="text-muted small mb-0">Emitido em: {{ certificado.emitido_em|date:"d/m/Y" }}</p></div>
+              </div>
+              <span class="badge text-bg-success align-self-start">Completo</span>
+            </div>
+            <p class="text-muted small">Documento digital disponível conforme etapa concluída no processo de habilitação.</p>
+            {% if certificado.arquivo %}
+              <a class="btn btn-primary-app w-100" href="{{ certificado.arquivo.url }}"><i class="bi bi-download me-2"></i>Baixar PDF</a>
+            {% else %}
+              <button class="btn btn-primary-app w-100" type="button"><i class="bi bi-download me-2"></i>Baixar PDF</button>
+            {% endif %}
+          </article>
+        </div>
+      {% empty %}
+        <div class="col-12"><div class="app-card text-center text-muted py-5">Nenhum certificado disponível</div></div>
+      {% endfor %}
+    </div>
+
+    <h2 class="h5 mb-3"><i class="bi bi-clock text-warning me-2"></i>Documentos Pendentes</h2>
+    <div class="row g-4">
+      {% for pendente in pendentes %}
+        <div class="col-md-6">
+          <article class="app-card h-100 bg-light">
+            <div class="d-flex justify-content-between gap-3 mb-3">
+              <div class="d-flex gap-3">
+                <div class="list-icon warning"><i class="bi bi-file-earmark-check"></i></div>
+                <div><h3 class="h5 mb-1">{{ pendente.nome }}</h3><p class="text-muted small mb-0">Previsão: {{ pendente.previsao }}</p></div>
+              </div>
+              <span class="badge text-bg-warning">Pendente</span>
+            </div>
+            {% if pendente.total %}
+              <div class="d-flex justify-content-between small mb-1"><span>Progresso</span><strong>{{ pendente.progresso }}/{{ pendente.total }} aulas</strong></div>
+              <div class="progress app-progress"><div class="progress-bar" style="width: {{ pendente.percentual }}%"></div></div>
+            {% else %}
+              <p class="text-muted small mb-0">Complete todas as etapas do processo para receber sua CNH.</p>
+            {% endif %}
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Perfil | Habilita+{% endblock %}
+{% block content %}
+<main class="page-bg py-5">
+  <div class="container">
+    <header class="mb-4">
+      <h1 class="h2 fw-bold">Meu Perfil</h1>
+      <p class="text-muted">Gerencie suas informações pessoais</p>
+    </header>
+    <section class="app-card mb-4">
+      <div class="d-flex flex-column flex-sm-row align-items-center gap-4">
+        <div class="avatar-lg">{{ request.user.first_name|first|default:"A" }}{{ request.user.last_name|first }}</div>
+        <div class="text-center text-sm-start">
+          <h2 class="h3 fw-bold">{{ request.user.get_full_name|default:request.user.username }}</h2>
+          <p class="text-muted mb-2">Aluno - Categoria {{ perfil.categoria_cnh }}</p>
+          <span class="badge badge-soft-primary">Matrícula: {{ perfil.criado_em|date:"d/m/Y" }}</span>
+          <span class="badge text-bg-success">Ativo</span>
+        </div>
+      </div>
+    </section>
+    <section class="app-card">
+      <h2 class="h5"><i class="bi bi-person text-primary-app me-2"></i>Informações Pessoais</h2>
+      <form method="post" class="row g-3 mt-1">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="col-md-6">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+        {% endfor %}
+        <div class="col-12"><button class="btn btn-primary-app w-100" type="submit">Salvar Alterações</button></div>
+      </form>
+    </section>
+  </div>
+</main>
+{% endblock %}

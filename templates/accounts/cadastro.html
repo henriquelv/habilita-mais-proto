@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cadastro | Habilita+{% endblock %}
+{% block content %}
+<main class="auth-page page-bg">
+  <div class="auth-card">
+    <div class="text-center mb-4">
+      <img src="{% static 'img/logo.png' %}" alt="Habilita+" class="auth-logo">
+      <p class="text-muted mb-0">Crie sua conta de aluno</p>
+    </div>
+    <div class="app-card">
+      <h1 class="h4 fw-bold">Cadastrar</h1>
+      <form method="post" class="vstack gap-3">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary-app w-100">Cadastrar</button>
+      </form>
+      <div class="text-center mt-3">
+        <a href="{% url 'login' %}">Já tenho conta</a>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
